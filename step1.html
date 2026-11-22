@@ -2,10 +2,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Daily Code - Step 1</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f172a;
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 20px;
+  }
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 28px 22px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  }
+  .label {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  #code {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #f8fafc;
+    background: #0f172a;
+    border: 1px dashed #475569;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    user-select: all;
+  }
+  button {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #2563eb;
+    color: #ffffff;
+    transition: background 0.2s ease;
+  }
+  button:hover {
+    background: #1d4ed8;
+  }
+  .status {
+    margin-top: 10px;
+    font-size: 13px;
+    min-height: 18px;
+    color: #4ade80;
+  }
+</style>
 </head>
 <body>
-<div id="code"></div>
+<div class="card">
+  <div class="label">DAILY CODE</div>
+  <div id="code"></div>
+  <button type="button" onclick="copyCode()">COPY</button>
+  <div class="status" id="status"></div>
+</div>
 <script>
 const STAGE_NUM = 1;
 const SECRET = "STAGE_1_SECRET";
@@ -25,7 +96,31 @@ if (base36.length > 5) {
   base36 = base36.slice(0, 5);
 }
 
-document.getElementById("code").textContent = PREFIX + base36;
+const finalCode = PREFIX + base36;
+document.getElementById("code").textContent = finalCode;
+
+function copyCode() {
+  const statusEl = document.getElementById("status");
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(finalCode).then(() => {
+      statusEl.textContent = "COPIED";
+    }).catch(() => {
+      fallbackCopy(statusEl);
+    });
+  } else {
+    fallbackCopy(statusEl);
+  }
+}
+
+function fallbackCopy(statusEl) {
+  const temp = document.createElement("textarea");
+  temp.value = finalCode;
+  document.body.appendChild(temp);
+  temp.select();
+  document.execCommand("copy");
+  document.body.removeChild(temp);
+  statusEl.textContent = "COPIED";
+}
 </script>
 </body>
 </html>
